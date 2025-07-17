@@ -1,0 +1,229 @@
+<!-- templates/account/login.html -->
+{% extends "wagtailadmin/admin_base.html" %}
+{% load i18n wagtailadmin_tags %}
+{% load allauth account %}
+
+{% block titletag %}{% trans "Sign In" %}{% endblock %}
+{% block bodyclass %}login{% endblock %}
+
+{% block furniture %}
+    <main class="content-wrapper" id="main">
+        <h1>{% block branding_login %}{% trans "Sign in to Wagtail" %}{% endblock %}</h1>
+
+        <div class="messages" role="status">
+            {# Always show messages div so it can be appended to by JS #}
+            {% if messages or form.errors %}
+                <ul>
+                    {% if form.errors %}
+                        {% for error in form.non_field_errors %}
+                            <li class="error">{{ error }}</li>
+                        {% endfor %}
+                    {% endif %}
+                    {% for message in messages %}
+                        <li class="{{ message.tags }}">{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+
+        {% block above_login %}{% endblock %}
+
+        <form class="login-form" action="{% url 'account_login' %}" method="post" autocomplete="off" novalidate>
+            {% block login_form %}
+                {% csrf_token %}
+
+                {% if redirect_field_value %}
+                    <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>
+                {% endif %}
+
+                {% block fields %}
+                    {% comment %}Render login field (email/username){% endcomment %}
+                    <div class="field {% if form.login.errors %}error{% endif %} my-1">
+                        <label class="field-label" for="{{ form.login.id_for_label }}">{{ form.login.label }}</label>
+                        <div class="field-content">
+                            {{ form.login }}
+                            {% if form.login.errors %}
+                                <div class="help-block help-critical">
+                                    {% for error in form.login.errors %}
+                                        <span class="help-text">{{ error }}</span>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    {% comment %}Render password field{% endcomment %}
+                    <div class="field {% if form.password.errors %}error{% endif %} my-1">
+                        <label class="field-label" for="{{ form.password.id_for_label }}">{{ form.password.label }}</label>
+                        <div class="field-content">
+                            {{ form.password }}
+                            {% if form.password.errors %}
+                                <div class="help-block help-critical">
+                                    {% for error in form.password.errors %}
+                                        <span class="help-text">{{ error }}</span>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    {% comment %}Password reset link{% endcomment %}
+                    <a class="reset-password my-1"
+                       href="{% url 'account_reset_password' %}">{% trans "Forgotten password?" %}</a>
+
+                    {% comment %}Remember me checkbox{% endcomment %}
+                    {% if form.remember %}
+                        <div class="field boolean_field my-1">
+                            <div class="field-content">
+                                <div class="checkbox">
+                                    {{ form.remember }}
+                                    <label for="{{ form.remember.id_for_label }}" class="remember-me">
+                                        {{ form.remember.label }}
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endblock %}
+            {% endblock %}
+
+            <footer class="form-actions">
+                {% block submit_buttons %}
+                    <button
+                            type="submit"
+                            class="button button-longrunning"
+                            data-controller="w-progress"
+                            data-action="w-progress#activate"
+                            data-w-progress-active-value="{% trans 'Signing in…' %}"
+                    >
+                        {% icon name="spinner" %}
+                        <em data-w-progress-target="label">{% trans 'Sign in' %}</em>
+                    </button>
+                {% endblock %}
+                {% if not SOCIALACCOUNT_ONLY %}
+                    <div class="signup-link">
+                        <p>{% blocktranslate %}Don't have an account?
+                            <a href="{{ signup_url }}">Sign up</a>{% endblocktranslate %}</p>
+                    </div>
+                {% endif %}
+            </footer>
+        </form>
+
+
+        {% block below_login %}{% endblock %}
+
+        {% block branding_logo %}
+            <div class="login-logo">
+                {% include "wagtailadmin/logo.html" with wordmark="True" %}
+            </div>
+        {% endblock %}
+    </main>
+
+    {% comment %}Add custom CSS to match Wagtail styling{% endcomment %}
+    <style>
+        .signup-link {
+            margin-top: 1rem;
+            text-align: center;
+        }
+
+        .signup-link p {
+            margin: 0;
+            font-size: 0.875rem;
+            color: #666;
+        }
+
+        .signup-link a {
+            color: #007cba;
+            text-decoration: none;
+        }
+
+        .signup-link a:hover {
+            text-decoration: underline;
+        }
+
+        .social-login,
+        .alternative-login {
+            margin-top: 2rem;
+        }
+
+        .login-or {
+            text-align: center;
+            margin: 1rem 0;
+            position: relative;
+        }
+
+        .login-or::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: #ddd;
+        }
+
+        .login-or span {
+            background: white;
+            padding: 0 1rem;
+            color: #666;
+            font-size: 0.875rem;
+        }
+
+        .socialaccount_providers {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .socialaccount_providers li {
+            margin-bottom: 0.5rem;
+        }
+
+        .socialaccount_providers a {
+            display: block;
+            padding: 0.75rem 1rem;
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            text-decoration: none;
+            color: #333;
+            text-align: center;
+            transition: background-color 0.2s;
+        }
+
+        .socialaccount_providers a:hover {
+            background: #e9ecef;
+        }
+
+        .button-secondary {
+            background: #6c757d;
+            color: white;
+            display: block;
+            width: 100%;
+            margin-bottom: 0.5rem;
+            text-align: center;
+            text-decoration: none;
+            padding: 0.75rem 1rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .button-secondary:hover {
+            background: #5a6268;
+        }
+
+        .my-1 {
+            margin: 1rem auto 1rem auto !important;
+        }
+
+    </style>
+{% endblock %}
+
+{% block extra_body %}
+    {{ block.super }}
+    {% if PASSKEY_LOGIN_ENABLED %}
+        {% include "mfa/webauthn/snippets/login_script.html" with button_id="passkey_login" %}
+    {% endif %}
+{% endblock %}
