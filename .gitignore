@@ -338,3 +338,4 @@ poultryhub/media/
 .idea
 frontend
 .deployment.conf
+db.sqlite3
