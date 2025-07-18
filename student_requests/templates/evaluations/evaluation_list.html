@@ -104,7 +104,7 @@
     <div class="page-header">
         <h1>Evaluation Requests</h1>
         {% if can_request_evaluation %}
-            <a href="{% url 'evaluations:evaluation_view' %}" class="btn">New Evaluation Request</a>
+            <a href="{% url 'student_requests:evaluation_view' %}" class="btn">New Evaluation Request</a>
         {% endif %}
     </div>
     
@@ -167,7 +167,7 @@
             <h3>No evaluation requests found</h3>
             <p>There are currently no evaluation requests in the system.</p>
             {% if can_request_evaluation %}
-                <a href="{% url 'evaluations:evaluation_view' %}" class="btn">Create First Evaluation Request</a>
+                <a href="{% url 'student_requests:evaluation_view' %}" class="btn">Create First Evaluation Request</a>
             {% endif %}
         </div>
     {% endif %}

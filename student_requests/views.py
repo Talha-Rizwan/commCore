@@ -17,13 +17,13 @@ def evaluation_view(request):
         student = Student.objects.get(user=request.user)
     except Student.DoesNotExist:
         messages.error(request, 'Only students can request evaluations.')
-        return redirect('evaluations:evaluation_list')
+        return redirect('student_requests:evaluation_list')
     
     # Check if student already has an evaluation request
     existing_evaluation = Evaluation.objects.filter(student=student).first()
     if existing_evaluation:
         messages.warning(request, f'You have already submitted an evaluation request on {existing_evaluation.evaluation_date.strftime("%B %d, %Y")}. Status: {existing_evaluation.status}')
-        return redirect('evaluations:evaluation_list')
+        return redirect('student_requests:evaluation_list')
     
     if request.method == 'POST':
         form = EvaluationForm(request.POST)
@@ -32,7 +32,7 @@ def evaluation_view(request):
             evaluation.student = student
             evaluation.save()
             messages.success(request, f'Evaluation request has been submitted successfully.')
-            return redirect('evaluations:evaluation_success')
+            return redirect('student_requests:evaluation_success')
     else:
         form = EvaluationForm()
     
