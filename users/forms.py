@@ -2,6 +2,7 @@ from django import forms
 from django.contrib.auth import get_user_model
 from allauth.account.forms import SignupForm as AllAuthSignupForm
 from django.contrib.auth.models import Group
+from users.models import Instructor, Student
 
 from utils.constants import UserTypes
 
@@ -26,8 +27,10 @@ class SignupForm(AllAuthSignupForm):
         group_name = None
         if user_type == UserTypes.INSTRUCTOR:
             group_name = UserTypes.INSTRUCTOR.label
+            Instructor.objects.create(user=user)
         elif user_type == UserTypes.STUDENT:
             group_name = UserTypes.STUDENT.label
+            Student.objects.create(user=user)
 
         # Add to group if valid group_name
         if group_name:
