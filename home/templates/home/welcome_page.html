@@ -100,47 +100,34 @@
 </style>
 
 <div class="dashboard-header">
-    <h1>Communication Training Management Dashboard</h1>
+    <h1>Arbisoft Communication Training</h1>
     <p>Welcome to becoming a better communicator everyday!</p>
 </div>
 
 <div class="dashboard-stats">
     <div class="stat-card">
-        <h2>--</h2>
+        <h2>43</h2>
         <p>Active Students</p>
     </div>
     <div class="stat-card">
-        <h2>--</h2>
-        <p>Instructors</p>
+        <h2>2</h2>
+        <p>Qualified Level</p>
     </div>
-    <div class="stat-card">
-        <h2>--</h2>
-        <p>Pending Evaluations</p>
-    </div>
-    <div class="stat-card">
-        <h2>--</h2>
-        <p>Completed Evaluations</p>
-    </div>
+
 </div>
 
 <div class="dashboard-actions">
     <div class="action-card">
         <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4"/></svg>
         <h3>Request Evaluation</h3>
-        <p>Submit a new evaluation request for your training progress.</p>
+        <p>Request evaluation (if new user).</p>
         <a href="{% url 'student_requests:evaluation_view' %}">Request Now</a>
     </div>
     <div class="action-card">
-        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M8 12l2 2 4-4"/></svg>
-        <h3>View Evaluations</h3>
-        <p>See all your evaluation requests and their statuses.</p>
-        <a href="{% url 'student_requests:evaluation_list' %}">View List</a>
-    </div>
-    <div class="action-card">
         <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-8 0v2"/><circle cx="12" cy="7" r="4"/></svg>
-        <h3>Manage Users</h3>
-        <p>Administer students, instructors, and permissions.</p>
-        <a href="/admin/users/user/">Manage Users</a>
+        <h3>Request Class Enrollment</h3>
+        <p>Request enrollment to the next level</p>
+        <a href="/enroll/">Request Now</a>
     </div>
     <div class="action-card">
         <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M12 4h9"/><rect x="3" y="8" width="6" height="8" rx="1"/></svg>
