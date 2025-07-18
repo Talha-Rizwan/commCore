@@ -1,0 +1,175 @@
+{% extends "base.html" %}
+
+{% block title %}Evaluation Requests{% endblock %}
+
+{% block extra_css %}
+<style>
+    .list-container {
+        max-width: 1000px;
+        margin: 2rem auto;
+        padding: 2rem;
+    }
+    
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+        padding-bottom: 1rem;
+        border-bottom: 2px solid #e9ecef;
+    }
+    
+    .btn {
+        background-color: #007bff;
+        color: white;
+        padding: 0.75rem 1.5rem;
+        border: none;
+        border-radius: 4px;
+        text-decoration: none;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+    
+    .btn:hover {
+        background-color: #0056b3;
+    }
+    
+    .evaluations-table {
+        width: 100%;
+        border-collapse: collapse;
+        background: white;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    
+    .evaluations-table th,
+    .evaluations-table td {
+        padding: 1rem;
+        text-align: left;
+        border-bottom: 1px solid #e9ecef;
+    }
+    
+    .evaluations-table th {
+        background-color: #f8f9fa;
+        font-weight: 600;
+        color: #495057;
+    }
+    
+    .evaluations-table tr:hover {
+        background-color: #f8f9fa;
+    }
+    
+    .status-badge {
+        padding: 0.25rem 0.75rem;
+        border-radius: 12px;
+        font-size: 0.8rem;
+        font-weight: 500;
+        text-transform: uppercase;
+    }
+    
+    .status-pending {
+        background-color: #fff3cd;
+        color: #856404;
+    }
+    
+    .status-completed {
+        background-color: #d1edff;
+        color: #0c5460;
+    }
+    
+    .status-cancelled {
+        background-color: #f8d7da;
+        color: #721c24;
+    }
+    
+    .no-evaluations {
+        text-align: center;
+        padding: 3rem;
+        color: #6c757d;
+    }
+    
+    .notes-preview {
+        max-width: 200px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="list-container">
+    <div class="page-header">
+        <h1>Evaluation Requests</h1>
+        {% if can_request_evaluation %}
+            <a href="{% url 'student_requests:evaluation_view' %}" class="btn">New Evaluation Request</a>
+        {% endif %}
+    </div>
+    
+    {% if evaluations %}
+        <table class="evaluations-table">
+            <thead>
+                <tr>
+                    <th>Student</th>
+                    <th>Trainer</th>
+                    <th>Status</th>
+                    <th>Level Assigned</th>
+                    <th>Request Date</th>
+                    <th>Notes</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for evaluation in evaluations %}
+                <tr>
+                    <td>
+                        <strong>{{ evaluation.student.user.get_full_name|default:evaluation.student.user.username }}</strong>
+                        {% if evaluation.student.designation %}
+                            <br><small style="color: #6c757d;">{{ evaluation.student.designation }}</small>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if evaluation.trainer %}
+                            {{ evaluation.trainer.user.get_full_name|default:evaluation.trainer.user.username }}
+                        {% else %}
+                            <em style="color: #6c757d;">Not assigned</em>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <span class="status-badge status-{{ evaluation.status|lower }}">
+                            {{ evaluation.status }}
+                        </span>
+                    </td>
+                    <td>
+                        {% if evaluation.assigned_level %}
+                            <strong>{{ evaluation.assigned_level }}</strong>
+                        {% else %}
+                            <em style="color: #6c757d;">Not assigned</em>
+                        {% endif %}
+                    </td>
+                    <td>{{ evaluation.evaluation_date|date:"M d, Y" }}</td>
+                    <td>
+                        {% if evaluation.notes %}
+                            <div class="notes-preview" title="{{ evaluation.notes }}">
+                                {{ evaluation.notes }}
+                            </div>
+                        {% else %}
+                            <em style="color: #6c757d;">No notes</em>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <div class="no-evaluations">
+            <h3>No evaluation requests found</h3>
+            <p>There are currently no evaluation requests in the system.</p>
+            {% if can_request_evaluation %}
+                <a href="{% url 'student_requests:evaluation_view' %}" class="btn">Create First Evaluation Request</a>
+            {% endif %}
+        </div>
+    {% endif %}
+</div>
+{% endblock %} 
